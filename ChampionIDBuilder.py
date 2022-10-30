@@ -1,5 +1,27 @@
+from cgitb import reset
 import json
 import os
+
+class DartFileBuilder:
+    def dictToDartEnumString(self, dataDict):
+        result = ""
+        for key in dataDict:
+            result += f"@JsonValue({dataDict[key]})\n"
+            result += f"{key.lower()},\n"
+        if len(result) > 0:
+            result = result[:len(result) - 1]
+        return result 
+
+    def makeDartEnumFileString(self, entityName, enumString):
+        dartFile = f"""import 'package:json_annotation/json_annotation.dart';
+
+enum {entityName} {{
+{enumString}
+}}
+            """
+        
+        with open(f"./{entityName}.dart", "w") as file:
+            file.write(dartFile) 
 
 class ChampionIDBuilder:
     championIDDict = {}
@@ -31,3 +53,8 @@ builder = ChampionIDBuilder()
 rawChampionJsonData = jsonManager.load_json("rawChampion.json")
 builder.setData(rawChampionJsonData)
 jsonManager.save_json(builder.championIDDict, "champion.json")
+
+dartFileBuilder = DartFileBuilder()
+enumString = dartFileBuilder.dictToDartEnumString(builder.championIDDict)
+dartFileBuilder.makeDartEnumFileString("Champion", enumString)
+

@@ -52,9 +52,20 @@ builder = ChampionIDBuilder()
 
 rawChampionJsonData = jsonManager.load_json("rawChampion.json")
 builder.setData(rawChampionJsonData)
-jsonManager.save_json(builder.championIDDict, "champion.json")
+# jsonManager.save_json(builder.championIDDict, "champion.json")
 
 dartFileBuilder = DartFileBuilder()
 enumString = dartFileBuilder.dictToDartEnumString(builder.championIDDict)
-dartFileBuilder.makeDartEnumFileString("Champion", enumString)
 
+# dartFileBuilder.makeDartEnumFileString("Champion", enumString)
+
+def checkChampionsArtAssetIsValid(championIDDict):
+    path = "./champion"
+    fileList = os.listdir(path)
+    for fileName in fileList:
+        if fileName[:-4] in championIDDict:
+            pass
+        else:
+            assert(False, "is invalid")
+    print(f"{len(fileList)} champions is valid")
+checkChampionsArtAssetIsValid(builder.championIDDict)
